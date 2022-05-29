@@ -1,6 +1,6 @@
 version: '3'
 services:
-  todoapp:
+  todo:
     build: 
       context: .
       args:
@@ -10,7 +10,15 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - MONGO_USER=alireza
+      - MONGO_PASSWORD=mypassword
     ports:
       - "3000:3000"
     command: npm run dev
+  
+  mongo:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=alireza
+      - MONGO_INITDB_ROOT_PASSWORD=mypassword
+
     
