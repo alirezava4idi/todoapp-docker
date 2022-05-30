@@ -23,3 +23,36 @@ exports.signup = async (req, res) => {
         })
     }
 }
+
+exports.login = async (req, res) => {
+    const {username, password} = req.body;
+
+    try {
+        const user = await User.findOne({username});
+
+        if(!user) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Username or password is incorrect"
+            })
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if(isPasswordCorrect) {
+            //todo: user session
+            res.status(200).json({
+                status: "success"
+            })
+        }else{
+            res.status(400).json({
+                status: "fail",
+                message: "Username or password is incorrect"
+            })
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            message: "Bad request"
+        })
+    }
+}
