@@ -1,5 +1,8 @@
 version: '3'
 services:
+  nginx:
+    ports:
+      - 3000:80
   todo:
     build: 
       context: .
@@ -12,8 +15,6 @@ services:
       - NODE_ENV=development
       - MONGO_USER=alireza
       - MONGO_PASSWORD=mypassword
-    ports:
-      - "3000:3000"
     command: npm run dev
   
   mongo:
