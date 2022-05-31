@@ -17,3 +17,17 @@ exports.createTodo = async (req, res) => {
         })
     }
 }
+
+
+exports.getallTodos = async (req, res) => {
+    const username = req.user;
+    try {
+        const allTodos = await Todo.find({username});
+        res.status(200).json({
+            status: "success",
+            data: allTodos
+        })
+    } catch (error) {
+        
+    }
+}
