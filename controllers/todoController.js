@@ -70,6 +70,24 @@ exports.updateOneTodo = async (req, res) => {
             })
         }
     } catch (error) {
-        
+        res.status(400).json({
+            status: "fail"
+        })
+    }
+}
+
+exports.deleteOneTodo = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const todo = await Todo.findByIdAndDelete(id);
+
+        res.status(200).json({
+            status: "success"
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: "fail"
+        })
     }
 }
