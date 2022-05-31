@@ -15,6 +15,8 @@ services:
       - NODE_ENV=development
       - MONGO_USER=alireza
       - MONGO_PASSWORD=mypassword
+      - TOKEN_SECRET=secrettoken
+      - REFRESH_TOKEN_SECRET=refreshtokensecretsecret
     command: npm run dev
   
   mongo:

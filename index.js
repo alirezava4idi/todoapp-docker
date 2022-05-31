@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { MONGO_USER, MONGO_PASSWORD, MONGO_IP, MONGO_PORT } = require('./config/config');
 const PORT = process.env.PORT || 3000;
 const userRouter = require('./routes/userRoutes');
+const todoRouter = require('./routes/todoRoutes');
 const mongoURL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`;
 
 const connectWithRetry = () => {
@@ -18,7 +19,7 @@ const connectWithRetry = () => {
     });
 }
 connectWithRetry();
-
+app.enable("trust proxy");
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 })
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/todos", todoRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);

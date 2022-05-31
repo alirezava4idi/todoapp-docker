@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
 
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { TOKEN_SECRET } = require('../config/config');
 
 exports.signup = async (req, res) => {
     const {username, password} = req.body;
@@ -10,10 +12,12 @@ exports.signup = async (req, res) => {
         const hashPassword = await bcrypt.hash(password, 12);
         const newUser = await User.create({username, password: hashPassword});
         //todo: handle user session
+        const token = jwt.sign({data: newUser}, TOKEN_SECRET, {expiresIn: '1h'});
         res.status(201).json({
             status: "success",
             data: {
-                user: newUser
+                user: newUser,
+                token
             }
         });
     } catch (error) {
@@ -40,8 +44,10 @@ exports.login = async (req, res) => {
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if(isPasswordCorrect) {
             //todo: user session
+            const token = jwt.sign({ data: user }, TOKEN_SECRET, { expiresIn: '1h' });
             res.status(200).json({
-                status: "success"
+                status: "success",
+                token
             })
         }else{
             res.status(400).json({
