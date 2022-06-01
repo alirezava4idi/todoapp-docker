@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const Todo = require('../models/todoModel');
 
 
@@ -85,6 +86,30 @@ exports.deleteOneTodo = async (req, res) => {
         res.status(200).json({
             status: "success"
         })
+    } catch (error) {
+        res.status(400).json({
+            status: "fail"
+        })
+    }
+}
+
+exports.addToTodo = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const {name, done} = req.body;
+        if(name !== undefined && done !== undefined) {
+            const todo = await Todo.findByIdAndUpdate(id, {
+                $push: {todos: {_id: new mongoose.Types.ObjectId() , name, done}}
+            })
+            res.status(200).json({
+                status: "success",
+            })
+        }else{
+            res.status(400).json({
+                status: "fail",
+                message: "name and done is needed"
+            })
+        }
     } catch (error) {
         res.status(400).json({
             status: "fail"

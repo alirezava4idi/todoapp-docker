@@ -8,8 +8,8 @@ const protect = require('../middlewares/authMiddleware');
 router.route("/create").post(protect, todoController.createTodo);
 router.route("/").get(protect, todoController.getallTodos);
 router.route("/:id").get(protect, todoController.getOneTodo).patch(protect, todoController.updateOneTodo).delete(protect, todoController.deleteOneTodo);
+router.route("/:id/item/add").patch(protect, todoController.addToTodo);
 // router.route("/:id/update)
-// router.route("/:id/item/add")
 // router.route("/:id/item/delete")
 // router.route("/:id/item/update")
 
