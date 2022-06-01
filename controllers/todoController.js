@@ -116,3 +116,25 @@ exports.addToTodo = async (req, res) => {
         })
     }
 }
+
+exports.getAllItemsOfTodo = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        if(id){
+            const items = await Todo.findById(id);
+            res.status(200).json({
+                status: "success",
+                data: items.todos
+            });
+        }else{
+            res.status(400).json({
+                status: "fail",
+            });
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+        }); 
+    }
+}
