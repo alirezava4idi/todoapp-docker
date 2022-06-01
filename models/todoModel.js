@@ -11,9 +11,6 @@ const todoSchema = new mongoose.Schema({
         lowercase: true,
         required: [true, "Todos need a name"],
         unique: true
-    },
-    todos: {
-        type: Array
     }
 });
 

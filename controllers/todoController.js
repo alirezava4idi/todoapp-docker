@@ -1,5 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const Todo = require('../models/todoModel');
+const Item = require('../models/itemModel');
 
 
 exports.createTodo = async (req, res) => {
@@ -95,19 +96,18 @@ exports.deleteOneTodo = async (req, res) => {
 
 exports.addToTodo = async (req, res) => {
     const id = req.params.id;
+    const owner = req.user;
     try {
-        const {name, done} = req.body;
-        if(name !== undefined && done !== undefined) {
-            const todo = await Todo.findByIdAndUpdate(id, {
-                $push: {todos: {_id: new mongoose.Types.ObjectId() , name, done}}
-            })
+        const {title, done} = req.body;
+        if(title !== undefined) {
+            const todo = await Item.create({owner, todo: id, title, done});
             res.status(200).json({
                 status: "success",
             })
         }else{
             res.status(400).json({
                 status: "fail",
-                message: "name and done is needed"
+                message: "title and done is needed"
             })
         }
     } catch (error) {
@@ -119,13 +119,13 @@ exports.addToTodo = async (req, res) => {
 
 exports.getAllItemsOfTodo = async (req, res) => {
     const id = req.params.id;
-
+    const owner = req.user;
     try {
-        if(id){
-            const items = await Todo.findById(id);
+        if(id && owner){
+            const items = await Item.find({todo: id, owner})
             res.status(200).json({
                 status: "success",
-                data: items.todos
+                data: items
             });
         }else{
             res.status(400).json({
@@ -136,5 +136,36 @@ exports.getAllItemsOfTodo = async (req, res) => {
         res.status(400).json({
             status: "fail",
         }); 
+    }
+}
+
+exports.updateItem = async (req, res) => {
+    const id = req.params.id;
+    const owner = req.user;
+    const itemId = req.params.itemid;
+    try {
+        if(id && itemId && owner) {
+            const {title, done} = req.body;
+            const todoItem = await Item.findOneAndUpdate({_id:itemId, owner, todo:id}, {
+                title,
+                done
+            }, {
+                new: true,
+                runValidators: true
+            })
+            res.status(200).json({
+                status: "success",
+                data: todoItem
+            })
+        }else{
+            res.status(400).json({
+                status: "fail"
+            });
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            message: error.message
+        });
     }
 }
