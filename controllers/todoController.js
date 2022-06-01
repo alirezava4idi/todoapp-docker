@@ -169,3 +169,26 @@ exports.updateItem = async (req, res) => {
         });
     }
 }
+exports.deleteItem = async (req, res) => {
+    const id = req.params.id;
+    const owner = req.user;
+    const itemId = req.params.itemid;
+    try {
+        if(id && itemId && owner) {
+            const {title, done} = req.body;
+            const todoItem = await Item.findOneAndDelete({_id:itemId, owner, todo:id})
+            res.status(200).json({
+                status: "success",
+            })
+        }else{
+            res.status(400).json({
+                status: "fail"
+            });
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            message: error.message
+        });
+    }
+}
